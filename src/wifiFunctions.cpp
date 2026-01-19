@@ -141,7 +141,7 @@ void onWiFiScanDone(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void wifiInit() {
     //Wifi Init
-    WiFi.mode(WIFI_OFF);
+    WiFi.mode(WIFI_STA);
     if (settings.apMode) {
         //AP-Mode
         //Serial.println("Starte WiFi AP-Mode");

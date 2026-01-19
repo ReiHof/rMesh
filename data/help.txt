@@ -13,3 +13,4 @@ Ap <1/0> ................ AP-Mode ein/aus
 Dhcp <1/0> .............. DHCP-Client aktiv
 Beboot .................. Neustart
 Vsersion ................ Version
+DEfaults ................ Standardeinstellungen laden

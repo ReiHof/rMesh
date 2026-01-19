@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <WiFi.h>
+#include <cstring>
 
 #include "frame.h"
 #include "serial.h"
@@ -196,6 +197,13 @@ void checkSerialRX() {
                     }
                     Serial.printf("DHCP: %s\n", settings.dhcpActive ? "true" : "false");
                 } 
+
+                //Defaults
+                if (strncmp(serialRxBuffer, "de", 2) == 0) {
+                    std::memset(settings.mycall, 0xff, sizeof(settings.mycall));
+                    loadSettings();
+                } 
+
                 
             }
             //Puffer löschen

@@ -85,6 +85,9 @@ void loop() {
     //UART
     checkSerialRX();
 
+    //Wifi
+    showWiFiStatus();
+
     //Prüfen, ob was empfangen wurde
     Frame f;
     bool rx = checkReceive(f);
