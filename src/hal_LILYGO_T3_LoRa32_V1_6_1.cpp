@@ -21,7 +21,6 @@ void printState(int state) {
 }
 
 void setWiFiLED(bool value) {
-    Serial.println(value);
     #ifdef PIN_WIFI_LED
         digitalWrite(PIN_WIFI_LED, value);
     #endif

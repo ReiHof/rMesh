@@ -43,10 +43,10 @@ void showWiFiStatus() {
         //Verbunden -> kurz blinken
             if (millis() > ledTimer) {
                 if (wiFiLED == true) {
-                    wiFiLED == false;
+                    wiFiLED = false;
                     ledTimer = millis() + 900;
                 } else {
-                    wiFiLED == true;
+                    wiFiLED = true;
                     ledTimer = millis() + 100;
                 }
                 setWiFiLED(wiFiLED);
