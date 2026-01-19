@@ -63,12 +63,7 @@ void checkSerialRX() {
                 //Version
                 if (strncmp(serialRxBuffer, "v", 1) == 0) {
                     //+ BOARD TYPE
-                    Serial.print("SW: ");
-                    Serial.print(NAME);
-                    Serial.print(" ");
-                    Serial.println(VERSION);
-                    Serial.print("HW: ");
-                    Serial.println(HW_TYPE);
+                    Serial.printf("\n\n\n%s\n%s %s\nREADY.\n", PIO_ENV_NAME, NAME, VERSION);   
                 }
 
                 //Settings

@@ -2,7 +2,7 @@
 
 #include "frame.h"
 
-#define HW_TYPE "LILYGO_T3_LoRa32_V1_6_1"
+//#define HW_TYPE "LILYGO_T3_LoRa32_V1_6_1"
 
 
 // Pin-Definitionen für T3 V1.6.1

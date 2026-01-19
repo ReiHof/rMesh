@@ -15,7 +15,7 @@
 //Interner Quatsch
 #define NAME "rMesh"                             //Versions-String
 #define VERSION "V1.0.1-a"                       //Versions-String
-#define MAX_CALLSIGN_LENGTH 8                    //maximale Länge des Rufzeichens  1....16
+#define MAX_CALLSIGN_LENGTH 9                    //maximale Länge des Rufzeichens  1....16
 #define CORE_DEBUG_LEVEL 3                       // 0 bedeutet keine Logs
 #define TX_BUFFER_SIZE 50
 #define PEER_LIST_SIZE 20

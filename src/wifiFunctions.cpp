@@ -18,9 +18,9 @@ bool wiFiLED = false;
 void checkForUpdates() {
     WiFiClient client;
     // LittleFS Update prüfen
-    httpUpdate.updateSpiffs(client, "http://dh1nfj.de/rMesh/update.php?type=littlefs&version=" + String(VERSION) + "&hw=" + String(HW_TYPE));
+    httpUpdate.updateSpiffs(client, "http://dh1nfj.de/rMesh/update.php?type=littlefs&version=" + String(VERSION) + "&hw=" + String(PIO_ENV_NAME));
     //Firmware prüfen
-    httpUpdate.update(client, "http://dh1nfj.de/rMesh/update.php?type=firmware&version=" + String(VERSION) + "&hw=" + String(HW_TYPE));
+    httpUpdate.update(client, "http://dh1nfj.de/rMesh/update.php?type=firmware&version=" + String(VERSION) + "&hw=" + String(PIO_ENV_NAME));
 }
 
 void showWiFiStatus() {

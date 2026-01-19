@@ -7,6 +7,7 @@
 #include "main.h"
 #include "wifiFunctions.h"
 #include "hal_LILYGO_T3_LoRa32_V1_6_1.h"
+#include "helperFunctions.h"
 
 AsyncWebServer webServer(80);
 AsyncWebSocketMessageHandler wsHandler;
@@ -116,17 +117,23 @@ void startWebServer() {
         // if (json["sendFrame"]["messageLength"].is<JsonVariant>()) {f.messageLength = json["sendFrame"]["messageLength"].as<uint16_t>();}
         //sendFrame(f);
         
-        strncpy(f.srcCall, "test", sizeof(f.srcCall));
-        strncpy(f.nodeCall, "test", sizeof(f.srcCall));
-        
-        transmitFrame(f);
+        //strncpy(f.srcCall, settings.mycall, sizeof(f.srcCall));
+        //strncpy(f.nodeCall, settings.mycall, sizeof(f.srcCall));
+        //strncpy((char*)f.message, "Hallo Welt!", sizeof(f.message));
+        //f.frameType = Frame::FrameTypes::MESSAGE_FRAME;
+        //f.messageLength = 11;
+        //transmitFrame(f);
+
+        //
+
+
         
 
     }   
 
     //Nachricht senden
     if (json["sendMessage"].is<JsonVariant>()) {
-    //   sendMessage(json["sendMessage"]["dstCall"].as<String>(), json["sendMessage"]["text"].as<String>());
+        sendMessage(json["sendMessage"]["dstCall"].as<const char*>(), json["sendMessage"]["text"].as<const char*>() );
     }   
 
     //Trace senden

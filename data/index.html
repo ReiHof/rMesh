@@ -282,12 +282,8 @@
                             if (f.id > 0) { msg += "ID: <b>" + f.id + "</b> "; }
                             if (f.srcCall.length > 0) { msg += "SRC: <b>" + f.srcCall + "</b> "; }
                             if (f.dstCall.length > 0) { msg += "DST: <b>" + f.dstCall + "</b> "; }
-                            if (f.message) {
-                                msg += "MSG: <b>";
-                                for (let i = 0; i < f.message.length; i++) {
-                                    msg += String.fromCharCode(f.message[i]);
-                                }
-                                msg += "</b>";
+                            if (f.text.length > 0) {
+                                msg += "MSG: <b>" + f.text + "</b>";
                             }
                             break;
   						case 0x04: 

@@ -3,6 +3,8 @@
 #include "settings.h"
 #include "frame.h"
 #include "main.h"
+#include "helperFunctions.h"
+#include "webFunctions.h"
 
 
 
@@ -19,6 +21,7 @@ void printState(int state) {
 }
 
 void setWiFiLED(bool value) {
+    Serial.println(value);
     #ifdef PIN_WIFI_LED
         digitalWrite(PIN_WIFI_LED, value);
     #endif
@@ -101,28 +104,24 @@ bool checkReceive(Frame &f) {
 
 
 void transmitFrame(Frame &f) {
-    uint8_t txBuffer[256];
+    uint8_t txBuffer[255];
     size_t txBufferLength;
-
-    Serial.print("*");
-    Serial.print(f.srcCall);
-    Serial.println("*");
-    //Senden
+ 
+    //Frame ergänzen
     txFlag = 1;
     statusTimer = 0;
     strncpy(f.nodeCall, settings.mycall, sizeof(f.nodeCall));
     f.tx = true;
 
+    //Senden
     txBufferLength = f.exportBinary(txBuffer, sizeof(txBuffer));
-    Serial.println(txBufferLength);
-
+    //Serial.printf("Länge: %d\n", txBufferLength);
+    //printHexArray(txBuffer, txBufferLength);
     radio.startTransmit(txBuffer, txBufferLength);
 
-    // transmittingFlag = true;
-    // statusTimer = 0;
-    // f.nodeCall = String(settings.mycall);
-    // f.tx = 1;
-    // f.exportBinary();
-    // //Monitor
-    // ws.textAll(f.getMonitorJSON());
+    //Frame monitoren
+    char jsonBuffer[2048];  
+    size_t len = f.monitorJSON(jsonBuffer, sizeof(jsonBuffer));
+    ws.textAll(jsonBuffer, len);  
+
 }

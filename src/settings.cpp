@@ -107,9 +107,14 @@ void sendSettings() {
     doc["settings"]["name"] = NAME;
     doc["settings"]["loraRepeat"] = settings.loraRepeat;
 
-    String jsonOutput;
-    serializeJson(doc, jsonOutput);
-    ws.textAll(jsonOutput);
+
+    char jsonBuffer[1024];  
+    size_t len = serializeJson(doc, jsonBuffer, sizeof(jsonBuffer));
+    ws.textAll(jsonBuffer, len);  // sendet direkt den Puffer
+    
+    // String jsonOutput;
+    // serializeJson(doc, jsonOutput);
+    // ws.textAll(jsonOutput);
 
 }
 

@@ -11,23 +11,25 @@ struct Frame {
     char nodeCall[MAX_CALLSIGN_LENGTH + 1] = {0};
     char viaCall[MAX_CALLSIGN_LENGTH + 1] = {0};
     uint8_t message[255] = {0};
-    uint8_t messageLen = 0;
+    size_t messageLength = 0;
     uint8_t messageType = TEXT_MESSAGE;
     uint32_t id = millis();
-    time_t timestamp = millis();
+    time_t timestamp = time(NULL);
     uint8_t hopCount = 0;
     uint8_t retry = 1;
     uint8_t initRetry = 1;
     uint32_t transmitMillis = 0;
     uint8_t frameType = MESSAGE_FRAME;
-    float rssi;
-    float snr;
-    float frqError;
+    float rssi = 0;
+    float snr = 0;
+    float frqError = 0;
     bool tx = false;
     bool syncFlag = false;
 
     size_t exportBinary(uint8_t* data, size_t length);
     void importBinary(uint8_t* data, size_t length);
+    size_t monitorJSON(char* buffer, size_t length);
+    size_t messageJSON(char* buffer, size_t length);
 
     enum FrameTypes {
         ANNOUNCE_FRAME,  

@@ -16,6 +16,7 @@
 #include "webFunctions.h"
 #include "serial.h"
 #include "webFunctions.h"
+#include "helperFunctions.h"
 
 
 //Uhrzeitformat
@@ -75,7 +76,7 @@ void setup() {
     startWebServer();
 
     //Init OK
-    Serial.printf("\n\n\n%s\nREADY.\n", PIO_ENV_NAME);   
+    Serial.printf("\n\n\n%s\n%s %s\nREADY.\n", PIO_ENV_NAME, NAME, VERSION);   
 }
 
 
@@ -87,6 +88,61 @@ void loop() {
 
     //Wifi
     showWiFiStatus();
+
+	//Announce Senden
+	if (millis() > announceTimer) {
+		announceTimer = millis() + ANNOUNCE_TIME;
+		Frame f;
+		f.frameType = Frame::FrameTypes::ANNOUNCE_FRAME;
+		f.transmitMillis = 0;
+		//Frame in SendeBuffer
+		txBuffer.push_back(f);
+	}  
+
+    //Prüfen, ob was gesendet werden muss
+	if ((txFlag == false) && (rxFlag == false)) {
+	    //Frames mit retry > 1 werden synchron gesendet !!!
+        //Prüfen, ob es Frames gibt, die noch nicht synchron gesendet wurden
+        bool sendNewSyncFrame = true;
+        for (int i = 0; i < txBuffer.size(); i++) {
+            if (txBuffer[i].syncFlag == true) {sendNewSyncFrame = false;}
+        }
+
+        //Im Puffer nach synchronen Frames duchen und den 1. gefundenen zum Senden freigeben
+        if (sendNewSyncFrame == true) {
+            for (int i = 0; i < txBuffer.size(); i++) {
+                if(txBuffer[i].retry > 1) {
+                    txBuffer[i].syncFlag = true; 
+                    txBuffer[i].transmitMillis = millis() + TX_RETRY_TIME + getTOA(30); //Time On Air für Antwort
+                    break;   
+                }
+            }
+        }
+        
+        //Sendepuffer duchlaufen und ggg. Frames senden
+    	for (int i = 0; i < txBuffer.size(); i++) {
+    		//Prüfen, ob Frame gesendet werden muss
+    		if ((millis() > txBuffer[i].transmitMillis) && ((txBuffer[i].retry <= 1) || (txBuffer[i].syncFlag == true))) {
+    			//Frame senden
+                transmitFrame(txBuffer[i]);
+                //Retrys runterzählen
+                if (txBuffer[i].retry > 0) {txBuffer[i].retry --;}
+                //Nächsten Sendezeitpunkt festlegen (nur relevant, wenn retry > 1)
+                txBuffer[i].transmitMillis = millis() + TX_RETRY_TIME + getTOA(30); //Time On Air für Antwort
+                //Wenn kein Retry mehr übrig, dann löschen
+                if (txBuffer[i].retry == 0) {  
+                    //Aus Peer-Liste löschen
+                    if (txBuffer[i].initRetry > 1) {availablePeerList(txBuffer[i].viaCall, false);}
+                    //Frame löschen
+                    txBuffer.erase(txBuffer.begin() + i);
+                }
+                break;
+    		}    
+    	}
+    }
+
+
+
 
     //Prüfen, ob was empfangen wurde
     Frame f;
