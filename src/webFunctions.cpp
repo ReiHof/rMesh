@@ -49,10 +49,11 @@ void startWebServer() {
     //Einstellungen speichern
     if (json["settings"].is<JsonVariant>()) {
       if (json["settings"]["mycall"].is<JsonVariant>()) { 
-        strlcpy(settings.mycall, json["settings"]["ntp"] | "", sizeof(settings.mycall));
+        strlcpy(settings.mycall, json["settings"]["mycall"] | "", sizeof(settings.mycall));
         for (size_t i = 0; i < sizeof(settings.mycall); i++) {
             settings.mycall[i] = toupper(settings.mycall[i]);
         }
+        settings.mycall[MAX_CALLSIGN_LENGTH] = '\0';
       }
       if (json["settings"]["ntp"].is<JsonVariant>()) { strlcpy(settings.ntpServer, json["settings"]["ntp"] | "", sizeof(settings.ntpServer)); }
       if (json["settings"]["dhcpActive"].is<JsonVariant>()) { settings.dhcpActive = json["settings"]["dhcpActive"].as<bool>(); }
