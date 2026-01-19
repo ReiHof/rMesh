@@ -2,6 +2,7 @@
 #include <LittleFS.h>
 #include <WiFi.h>
 
+#include "frame.h"
 #include "serial.h"
 #include "config.h"
 #include "settings.h"

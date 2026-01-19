@@ -1,5 +1,8 @@
 #pragma once
 
+#include "config.h"
+#include "frame.h"
+
 struct Peer {
     char call[MAX_CALLSIGN_LENGTH + 1] = {0};
     time_t lastRX = 0;
@@ -15,6 +18,6 @@ extern uint32_t announceTimer;
 extern const char* TZ_INFO;
 extern std::vector<Peer> peerList;
 extern portMUX_TYPE peerListMux;
-//extern std::vector<Frame> txBuffer;
+extern std::vector<Frame> txBuffer;
 extern portMUX_TYPE txBufferMux;
 

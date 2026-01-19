@@ -1,6 +1,8 @@
 #include "hal_LILYGO_T3_LoRa32_V1_6_1.h"
 #include "RadioLib.h"
 #include "settings.h"
+#include "frame.h"
+#include "main.h"
 
 
 
@@ -8,14 +10,13 @@ SX1278 radio = new Module(LORA_NSS, LORA_DIO0, LORA_RST, LORA_DIO1);
 #if defined(ESP8266) || defined(ESP32)
   ICACHE_RAM_ATTR
 #endif
-bool transmittingFlag = false;
-bool receivingFlag = false;
 
+bool txFlag = false;
+bool rxFlag = false;
 
 void printState(int state) {
     if (state != RADIOLIB_ERR_NONE) {Serial.printf("FAILED! code %d\n", state);}
 }
-
 
 void setWiFiLED(bool value) {
     #ifdef PIN_WIFI_LED
@@ -24,7 +25,7 @@ void setWiFiLED(bool value) {
 }
 
 
-void init() {
+void initHal() {
     //SPI Init
     SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI, SPI_SS);
 
@@ -59,18 +60,69 @@ void init() {
 }
 
 
-/*
 
-bool transmitFrame(Frame &f) {
-    //Senden
-    transmittingFlag = true;
-    statusTimer = 0;
-    f.nodeCall = String(settings.mycall);
-    f.tx = 1;
-    f.exportBinary();
-    radio.startTransmit(f.exportBinary(), f.rawDataLength);
-    //Monitor
-    ws.textAll(f.getMonitorJSON());
-    return true;
+bool checkReceive(Frame &f) {
+    //IRQ-Flags auslesen
+    uint16_t irqFlags = radio.getIRQFlags();
+     //Prüfen ob Kanal belegt
+    if (irqFlags & RADIOLIB_SX127X_CLEAR_IRQ_FLAG_VALID_HEADER) {
+        if (rxFlag == false) {
+            rxFlag = true;
+            statusTimer = 0;
+        }
+    } else {
+        if (rxFlag == true) {
+            rxFlag = false;
+            statusTimer = 0;
+        }
+    }
+    //Senden fertig
+    if (irqFlags & RADIOLIB_SX127X_CLEAR_IRQ_FLAG_TX_DONE) {
+        radio.startReceive();
+        txFlag = false;
+        statusTimer = 0;
+    }      
+    //Daten Empfangen -> rxBuffer
+    if (irqFlags & RADIOLIB_SX127X_CLEAR_IRQ_FLAG_RX_DONE) {
+        //Prüfen, ob was empfangen wurde
+        uint8_t rxBuffer[256];
+        size_t rxBufferLength;
+        rxBufferLength = radio.getPacketLength();
+        int16_t state = radio.readData(rxBuffer, rxBufferLength);
+        //Empfang wieder starten
+        radio.startReceive();
+        if (state == RADIOLIB_ERR_NONE) {    
+            f.importBinary(rxBuffer, rxBufferLength);
+            return true;
+        }
+    }
+    return false;
 }
-*/
+
+
+void transmitFrame(Frame &f) {
+    uint8_t txBuffer[256];
+    size_t txBufferLength;
+
+    Serial.print("*");
+    Serial.print(f.srcCall);
+    Serial.println("*");
+    //Senden
+    txFlag = 1;
+    statusTimer = 0;
+    strncpy(f.nodeCall, settings.mycall, sizeof(f.nodeCall));
+    f.tx = true;
+
+    txBufferLength = f.exportBinary(txBuffer, sizeof(txBuffer));
+    Serial.println(txBufferLength);
+
+    radio.startTransmit(txBuffer, txBufferLength);
+
+    // transmittingFlag = true;
+    // statusTimer = 0;
+    // f.nodeCall = String(settings.mycall);
+    // f.tx = 1;
+    // f.exportBinary();
+    // //Monitor
+    // ws.textAll(f.getMonitorJSON());
+}

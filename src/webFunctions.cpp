@@ -6,6 +6,7 @@
 #include "settings.h"
 #include "main.h"
 #include "wifiFunctions.h"
+#include "hal_LILYGO_T3_LoRa32_V1_6_1.h"
 
 AsyncWebServer webServer(80);
 AsyncWebSocketMessageHandler wsHandler;
@@ -47,13 +48,11 @@ void startWebServer() {
 
     //Einstellungen speichern
     if (json["settings"].is<JsonVariant>()) {
-      Serial.println("Einstellungen");
-
       if (json["settings"]["mycall"].is<JsonVariant>()) { 
-        String mycall = json["settings"]["mycall"].as<String>();
-        mycall.toUpperCase();
-        mycall.toCharArray(settings.mycall, sizeof(settings.mycall));
-        //strlcpy(settings.mycall, json["settings"]["mycall"] | "", sizeof(settings.mycall)); 
+        strlcpy(settings.mycall, json["settings"]["ntp"] | "", sizeof(settings.mycall));
+        for (size_t i = 0; i < sizeof(settings.mycall); i++) {
+            settings.mycall[i] = toupper(settings.mycall[i]);
+        }
       }
       if (json["settings"]["ntp"].is<JsonVariant>()) { strlcpy(settings.ntpServer, json["settings"]["ntp"] | "", sizeof(settings.ntpServer)); }
       if (json["settings"]["dhcpActive"].is<JsonVariant>()) { settings.dhcpActive = json["settings"]["dhcpActive"].as<bool>(); }
@@ -85,12 +84,14 @@ void startWebServer() {
       if (json["settings"]["loraPreambleLength"].is<JsonVariant>()) { settings.loraPreambleLength = json["settings"]["loraPreambleLength"].as<int16_t>(); }
       if (json["settings"]["loraRepeat"].is<JsonVariant>()) { settings.loraRepeat = json["settings"]["loraRepeat"].as<bool>(); }
       saveSettings();
+      initHal();
+      
     }
 
 
     //Frame senden (alles ist möglich)
     if (json["sendFrame"].is<JsonVariant>()) {
-        // Frame f;
+        Frame f;
         // if (json["sendFrame"]["transmitMillis"].is<JsonVariant>()) {f.transmitMillis = json["sendFrame"]["transmitMillis"].as<uint32_t>();}
         // if (json["sendFrame"]["frameType"].is<JsonVariant>()) {f.frameType = json["sendFrame"]["frameType"].as<uint8_t>();}
         // if (json["sendFrame"]["srcCall"].is<JsonVariant>()) {f.srcCall = json["sendFrame"]["srcCall"].as<String>();}
@@ -112,7 +113,14 @@ void startWebServer() {
         //     }
         // }
         // if (json["sendFrame"]["messageLength"].is<JsonVariant>()) {f.messageLength = json["sendFrame"]["messageLength"].as<uint16_t>();}
-        // sendFrame(f);
+        //sendFrame(f);
+        
+        strncpy(f.srcCall, "test", sizeof(f.srcCall));
+        strncpy(f.nodeCall, "test", sizeof(f.srcCall));
+        
+        transmitFrame(f);
+        
+
     }   
 
     //Nachricht senden
@@ -169,8 +177,6 @@ void startWebServer() {
   });
   
 
- 
-
   //Websocket -> Webserver
   webServer.addHandler(&ws);
 
@@ -181,7 +187,6 @@ void startWebServer() {
 
   //Redirect für Index-Seite
   webServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-
     request->redirect("/index.html");
   }); 
 

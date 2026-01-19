@@ -1,12 +1,13 @@
 #pragma once
 
+
 //Konfiguration
 struct Settings {
   bool dhcpActive;
   bool apMode;
   char wifiSSID[64];
   char wifiPassword[64];
-  char mycall[17];      // max. 16 Zeichen
+  char mycall[17];     
   char ntpServer[64];
   IPAddress wifiIP;
   IPAddress wifiNetMask;

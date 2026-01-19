@@ -127,15 +127,17 @@ void loadSettings() {
     if (strlen(settings.mycall) == 0 || strlen(settings.mycall) >= 8) {valid = false;}
     if (strlen(settings.ntpServer) == 0 || strlen(settings.ntpServer) >= 64) {valid = false;}
 
+    valid = false;
+
     if (valid == false) {
         //Defaults laden
         Serial.println("Lade Default-Settings");
-        strcpy(settings.wifiSSID, "");
-        strcpy(settings.wifiPassword, "");
+        strcpy(settings.wifiSSID, "NFJ-Lan BB");
+        strcpy(settings.wifiPassword, "438.725db0kch");
         strcpy(settings.ntpServer, "de.pool.ntp.org");
-        strcpy(settings.mycall, "XX0XX");
+        strcpy(settings.mycall, "DH1NFJ");
         settings.apMode = false;
-        settings.dhcpActive = true;
+        settings.dhcpActive = false;
         settings.wifiIP = IPAddress(192,168,33,60);
         settings.wifiNetMask = IPAddress(255,255,255,0);
         settings.wifiGateway = IPAddress(192,168,33,4);
