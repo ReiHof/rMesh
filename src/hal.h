@@ -1,54 +1,24 @@
-
 #pragma once
 
-#include "frame.h"
+// -------------------------------
+// HAL-Dispatch je PlatformIO Env
+// -------------------------------
 
-// Pin-Definitionen für T3 V1.6.1
-#define LORA_NSS    18
-#define LORA_DIO0   26
-#define LORA_RST    23
-#define LORA_DIO1   33
-#define SPI_SCK         5
-#define SPI_MISO        19
-#define SPI_MOSI        27
-#define SPI_SS          18
+#if defined(LILYGO_T3_LORA32_V1_6_1)
 
-#define PIN_WIFI_LED 25      //LED WiFi-Status (ein = AP-Mode, blinken = Client-Mode, aus = nicht verbunden)
-//#define PIN_AP_MODE_SWITCH 0     //Taster Umschaltung WiFi CLient/AP
+    #include "hal_LILYGO_T3_LoRa32_V1_6_1.h"
 
+#elif defined(LILYGO_T_BEAM)
 
-void setWiFiLED(bool value);
-void initHal();
-bool checkReceive(Frame &f);
-void transmitFrame(Frame &f);
+    #include "hal_LILYGO_T-Beam.h"
+
+#elif defined(HAL_HELTEC_WIRELESS_STICK_LITE_V3)
+
+    #include "hal_HELTEC_Wireless_Stick_Lite_V3.h"
 
 
-extern bool txFlag;
-extern bool rxFlag;
+#else
 
-
-/*
-#ifndef RF_H
-#define RF_H
-#include <RadioLib.h>
-#include "main.h"
-
-
-
-extern bool transmittingFlag;
-extern bool receivingFlag;
-extern SX1278 radio;
-
-
-void initRadio();
-bool transmitFrame(Frame &f);
-
-
-//void monitorFrame(Frame &f);
-
-
-
+    #error "No HAL defined for this board!"
 
 #endif
-*/
-

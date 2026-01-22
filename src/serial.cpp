@@ -43,65 +43,14 @@ void checkSerialRX() {
                 
                 //Befehle auswerten
 
-    //             //Testfunktionen
-    //             if (strncmp(serialRxBuffer, "z", 1) == 0) {
-
-    // char text[10] = "ZZZ";
-    // char dstCall[10] = "BBB";
-    // uint8_t txBuffer[255];
-    // size_t txBufferLength;
-    // Frame f;
-    // f.frameType = Frame::FrameTypes::MESSAGE_FRAME;
-    // f.messageType = Frame::MessageTypes::COMMAND_MESSAGE;
-    // memcpy(f.srcCall, settings.mycall, sizeof(f.srcCall));
-    // memcpy(f.dstCall, dstCall, sizeof(f.dstCall));
-    // memcpy(f.viaCall, dstCall, sizeof(f.viaCall));
-    // memcpy((char*)f.message, text, sizeof(f.message));
-    // f.messageLength = strlen(text);
-    // f.id = millis();
-    // f.timestamp = time(NULL);
-    // f.tx = true;
-    // txFlag = 1;
-    // memcpy(f.nodeCall, settings.mycall, sizeof(f.nodeCall));
-    // txBufferLength = f.exportBinary(txBuffer, sizeof(txBuffer));
-    // //printHexArray(txBuffer, txBufferLength);
-    // Frame rx;
-    // rx.importBinary(txBuffer, txBufferLength);
-
-    // sendPeerList();
-    // addPeerList(rx);
-
-    //             }
-
-    //             //Testfunktionen
-    //             if (strncmp(serialRxBuffer, "t", 1) == 0) {
-
-    // char text[10] = "ZZZ";
-    // char dstCall[10] = "BBB";
-    // uint8_t txBuffer[255];
-    // size_t txBufferLength;
-    // Frame f;
-    // f.frameType = Frame::FrameTypes::MESSAGE_FRAME;
-    // f.messageType = Frame::MessageTypes::COMMAND_MESSAGE;
-    // memcpy(f.srcCall, settings.mycall, sizeof(f.srcCall));
-    // memcpy(f.dstCall, dstCall, sizeof(f.dstCall));
-    // memcpy(f.viaCall, dstCall, sizeof(f.viaCall));
-    // memcpy((char*)f.message, text, sizeof(f.message));
-    // f.messageLength = strlen(text);
-    // f.id = millis();
-    // f.timestamp = time(NULL);
-    // f.tx = true;
-    // txFlag = 1;
-    // memcpy(f.nodeCall, settings.mycall, sizeof(f.nodeCall));
-    // txBufferLength = f.exportBinary(txBuffer, sizeof(txBuffer));
-    // //printHexArray(txBuffer, txBufferLength);
-    // Frame rx;
-    // rx.importBinary(txBuffer, txBufferLength);
-
-    // sendPeerList();
-    // addPeerList(rx, true);
-
-    //             }
+                //Testfunktionen
+                if (strncmp(serialRxBuffer, "z", 1) == 0) {
+                    char call1[MAX_CALLSIGN_LENGTH + 1] = "1111";
+                    char call2[MAX_CALLSIGN_LENGTH + 1] = "555";
+                    uint32_t id = 123456789;
+                    bool chk = checkACK(call1, call2, id);
+                    Serial.println(chk);
+                }
 
                 //Hilfe
                 if (strncmp(serialRxBuffer, "h", 1) == 0) {

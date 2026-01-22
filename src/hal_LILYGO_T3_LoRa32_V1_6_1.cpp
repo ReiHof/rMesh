@@ -1,3 +1,5 @@
+#ifdef LILYGO_T3_LORA32_V1_6_1
+
 #include "hal.h"
 #include "RadioLib.h"
 #include "settings.h"
@@ -122,10 +124,12 @@ void transmitFrame(Frame &f) {
     radio.startTransmit(txBuffer, txBufferLength);
 
     //Frame monitoren
-    char jsonBuffer[2048];  
-    size_t len = f.monitorJSON(jsonBuffer, sizeof(jsonBuffer));
+    char* jsonBuffer = (char*)malloc(2048); 
+    size_t len = f.monitorJSON(jsonBuffer, 2048);
     ws.textAll(jsonBuffer, len);  
+    free(jsonBuffer);
+    jsonBuffer = nullptr;
 
 }
 
-
+#endif
