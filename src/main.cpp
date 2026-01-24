@@ -13,14 +13,15 @@
 #include "serial.h"
 #include "webFunctions.h"
 #include "helperFunctions.h"
+#include "peer.h"
+#include "ack.h"
+
 
 
 //Uhrzeitformat
 const char* TZ_INFO = "CET-1CEST,M3.5.0,M10.5.0/3";
 
-//Peer-Liste
-std::vector<Peer> peerList;
-//portMUX_TYPE peerListMux = portMUX_INITIALIZER_UNLOCKED;
+
 
 //Sendepuffer
 std::vector<Frame> txBuffer;
@@ -185,7 +186,7 @@ void loop() {
                 if (strcmp(f.viaCall, settings.mycall) == 0) {
                     availablePeerList(f.nodeCall, true);
                     //Wenn ich ein ACK direkt bekommen habe, dann extra Eintrag
-                    checkACK(f.srcCall, "direkt", f.id);    
+                    addACK(f.srcCall, settings.mycall, f.id);    
                 }
 
                 //Im TX-Puffer nach MSG-ID und NODE-Call suchen und löschen
@@ -198,7 +199,7 @@ void loop() {
                 );
 
                 //ACKs in Datei speichern (für REPEAT und ACK für fremde Frames senden)
-                checkACK(f.srcCall, f.nodeCall, f.id);
+                addACK(f.srcCall, f.nodeCall, f.id);
                 break;
 
             //Nachricht empfangen
@@ -213,7 +214,8 @@ void loop() {
                 );
 
                 //ACK-Senden bei mir immer, bei anderen nur 1x
-                if ((strcmp(f.viaCall, settings.mycall) == 0) || ((strlen(f.viaCall) > 0) && (checkACK(f.srcCall, f.nodeCall, f.id) == false) && (checkACK(f.srcCall, "direkt", f.id) == false))) {
+                if ((strcmp(f.viaCall, settings.mycall) == 0) || ((strlen(f.viaCall) > 0) && (checkACK(f.srcCall, f.nodeCall, f.id) == false) && (checkACK(f.srcCall, settings.mycall, f.id) == false))) {
+                    addACK(f.srcCall, f.nodeCall, f.id);
                     tf.frameType = Frame::FrameTypes::MESSAGE_ACK_FRAME;
                     memcpy(tf.viaCall, f.nodeCall, sizeof(tf.viaCall));
                     memcpy(tf.srcCall, f.nodeCall, sizeof(tf.srcCall));
@@ -323,23 +325,8 @@ void loop() {
                         bool sentVia = false;
                         file = LittleFS.open("/ack.json", "r");
                         for (int i = 0; i < peerList.size(); i++) {
-                            //Prüfen, ob das Peer das Frame schon mal wiederholt hat
-                            found = false;
-                            if (file) {
-                                JsonDocument doc;
-                                file.seek(0);
-                                while (file.available()) {
-                                    DeserializationError error = deserializeJson(doc, file);
-                                    if (error == DeserializationError::Ok) {
-                                        if ((doc["id"].as<uint32_t>() == f.id) && (strcmp(doc["srcCall"], f.srcCall) == 0) && (strcmp(doc["nodeCall"], peerList[i].nodeCall) == 0)) {
-                                            found = true;
-                                            break; 
-                                        }
-                                    } else if (error != DeserializationError::EmptyInput) {
-                                        file.readStringUntil('\n');
-                                    }
-                                }
-                            }
+                            //Prüfen, ob das Peer das Frame schon mal wiederholt hat (in ACK-Liste)
+                            found = checkACK(f.srcCall, peerList[i].nodeCall, f.id);
 
                             //In TX-Puffer eintragen
                             if ((found == false) && (peerList[i].available == true) && (strcmp(peerList[i].nodeCall, f.nodeCall) != 0)) {

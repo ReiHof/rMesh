@@ -1,24 +1,14 @@
 #pragma once
 
-// -------------------------------
-// HAL-Dispatch je PlatformIO Env
-// -------------------------------
+// HAL-Dispatch 
 
 #if defined(LILYGO_T3_LORA32_V1_6_1)
-
     #include "hal_LILYGO_T3_LoRa32_V1_6_1.h"
-
 #elif defined(LILYGO_T_BEAM)
-
     #include "hal_LILYGO_T-Beam.h"
-
 #elif defined(HAL_HELTEC_WIRELESS_STICK_LITE_V3)
-
     #include "hal_HELTEC_Wireless_Stick_Lite_V3.h"
-
-
 #else
-
     #error "No HAL defined for this board!"
-
 #endif
+

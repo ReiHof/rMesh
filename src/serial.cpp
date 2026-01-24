@@ -45,15 +45,15 @@ void checkSerialRX() {
 
                 //Testfunktionen
                 if (strncmp(serialRxBuffer, "z", 1) == 0) {
-                    char call1[MAX_CALLSIGN_LENGTH + 1] = "1111";
-                    char call2[MAX_CALLSIGN_LENGTH + 1] = "555";
-                    uint32_t id = 123456789;
-                    bool chk = checkACK(call1, call2, id);
-                    Serial.println(chk);
+                    // char call1[MAX_CALLSIGN_LENGTH + 1] = "1111";
+                    // char call2[MAX_CALLSIGN_LENGTH + 1] = "555";
+                    // uint32_t id = 123456789;
+                    // bool chk = checkACK(call1, call2, id);
+                    // Serial.println(chk);
                 }
 
                 if (strncmp(serialRxBuffer, "l", 1) == 0) {
-                    availablePeerList("BBB", false);               
+
                 }
 
 

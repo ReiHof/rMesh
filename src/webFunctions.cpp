@@ -8,6 +8,7 @@
 #include "wifiFunctions.h"
 #include "hal.h"
 #include "helperFunctions.h"
+#include "peer.h"
 
 AsyncWebServer webServer(80);
 AsyncWebSocketMessageHandler wsHandler;

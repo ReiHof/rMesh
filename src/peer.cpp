@@ -1,0 +1,93 @@
+#include <Arduino.h>
+#include <ArduinoJson.h>
+
+#include "frame.h"
+#include "main.h"
+#include "webFunctions.h"
+#include "peer.h"
+
+//Peer-Liste
+std::vector<Peer> peerList;
+//portMUX_TYPE peerListMux = portMUX_INITIALIZER_UNLOCKED;
+
+void checkPeerList() {
+    //Suchen, ob Peer bereits existiert
+    auto it = std::find_if(peerList.begin(), peerList.end(), [&](const Peer& peer) { return (time(NULL) - peer.timestamp) > PEER_TIMEOUT; });
+    if (it != peerList.end()) {
+        //portENTER_CRITICAL(&peerListMux);
+        peerList.erase(it);
+        //portEXIT_CRITICAL(&peerListMux);
+        sendPeerList();
+    } 
+}
+
+
+void sendPeerList() {
+    JsonDocument doc;
+    for (int i = 0; i < peerList.size(); i++) {
+        //Serial.printf("Peer List #%d %s\n", i, peerList[i].call);
+        doc["peerlist"]["peers"][i]["port"] = peerList[i].port;
+        doc["peerlist"]["peers"][i]["call"] = peerList[i].nodeCall;
+        doc["peerlist"]["peers"][i]["timestamp"] = peerList[i].timestamp;
+        doc["peerlist"]["peers"][i]["rssi"] = peerList[i].rssi;
+        doc["peerlist"]["peers"][i]["snr"] = peerList[i].snr;
+        doc["peerlist"]["peers"][i]["frqError"] = peerList[i].frqError;
+        doc["peerlist"]["peers"][i]["available"] = peerList[i].available;
+    }  
+    char* jsonBuffer = (char*)malloc(2048); 
+    size_t len = serializeJson(doc,jsonBuffer, 2048);
+    ws.textAll(jsonBuffer, len);  
+    free(jsonBuffer);
+    jsonBuffer = nullptr;
+}
+
+
+void availablePeerList(const char* call, bool available) {
+    // Suchen, ob Peer bereits existiert
+    auto it = std::find_if(peerList.begin(), peerList.end(), [&](const Peer& peer) { return strcmp(peer.nodeCall, call) == 0; });
+
+    if (it != peerList.end()) {
+        // Peer existiert: update
+        it->available = available;
+    }
+
+    //Peer Liste neu senden
+    sendPeerList();
+}
+
+void addPeerList(Frame &f) {
+    // Suchen, ob Peer bereits existiert
+    auto it = std::find_if(peerList.begin(), peerList.end(), [&](const Peer& peer) { return strcmp(peer.nodeCall, f.nodeCall) == 0; });
+
+    if (it != peerList.end()) {
+        // Peer existiert: update, aber available Flag behalten
+        it->timestamp = f.timestamp;
+        it->rssi = f.rssi;
+        it->snr = f.snr;
+        it->frqError = f.frqError;
+        it->port = f.port;
+    } else {
+        // Peer nicht gefunden: hinzufügen
+        Peer p;
+        memcpy(p.nodeCall, f.nodeCall, sizeof(p.nodeCall));
+        p.timestamp = f.timestamp;
+        p.rssi = f.rssi;
+        p.snr = f.snr;
+        p.frqError = f.frqError;
+        p.port = f.port;
+        p.available = false;
+        //portENTER_CRITICAL(&peerListMux);
+        peerList.push_back(p);
+        //portEXIT_CRITICAL(&peerListMux);
+
+    }
+
+    // Sortieren nach SNR (absteigend)
+    std::sort(peerList.begin(), peerList.end(), [](const Peer& a, const Peer& b) { return a.snr > b.snr; });
+
+    sendPeerList();
+}
+
+
+
+

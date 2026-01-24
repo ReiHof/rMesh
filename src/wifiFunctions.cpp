@@ -19,9 +19,9 @@ void checkForUpdates() {
     WiFiClient client;
     client.setTimeout(1000); // Timeout in ms
     // LittleFS Update prüfen
-    httpUpdate.updateSpiffs(client, "http://dh1nfj.de/rMesh/update.php?t=littlefs&v=" + String(VERSION) + "&h=" + String(PIO_ENV_NAME));
+    httpUpdate.updateSpiffs(client, "http://dh1nfj.de/rMesh/update.php?file=" PIO_ENV_NAME "/" VERSION "/littlefs.bin");
     //Firmware prüfen
-    httpUpdate.update(client, "http://dh1nfj.de/rMesh/update.php?t=firmware&v=" + String(VERSION) + "&h=" + String(PIO_ENV_NAME));
+    httpUpdate.update(client, "http://dh1nfj.de/rMesh/update.php?file=" PIO_ENV_NAME "/" VERSION "/firmware.bin");
 }
 
 void showWiFiStatus() {

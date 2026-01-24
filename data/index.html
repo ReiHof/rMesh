@@ -23,23 +23,25 @@
 		<div style="display: flex; gap: 20px;">
 			<div style="flex: 1; min-width: 0;">
 				<h1>Messages</h1>
-				<div style="overflow-y: auto; border: 1px solid;">
-                    <div id="messages" style="height: 200px; overflow-y: auto;  padding:5px; "> </div>
+				<div style="overflow-y: auto; border: 1px solid; padding:5px; ">
+                    <!-- Filter:
+                    <select id="messageFilter"> </select> -->
+                    <div id="messages" style="height: 200px; overflow-y: auto;  "> </div>
 					Destination: <input style="width: 100px;" id="messageDstCall">
 					Message: <input style="width: 400px;" id="messageText">
 					<button id="messageSend">send</button>
                     <button id="commandAnnounce">announce</button>
                     <button id="commandTune">tune</button>                    
                     <button id="commandTrace">trace</button>                    
-                    <button id="commandVersion">version?</button>                    
-                    <button id="commandReboot">reboot</button>                    
+                    <!-- <button id="commandVersion">version</button>                    
+                    <button id="commandReboot">reboot</button>                     -->
 				</div>
 			</div>
 			<div style="flex: 0 0 40%;">
 				<h1>Status</h1>
 				<div style="border: 1px solid; width: fit-content;">
 					<table>
-						<tr> <td>Uhrzeit:</td> <td><span id="statusTime"></span> <button id="statusSyncTime">sync</button> </td> </tr>
+						<tr> <td>Time:</td> <td><span id="statusTime"></span> <button id="statusSyncTime">sync</button> </td> </tr>
 						<tr> <td>RX:</td> <td><span id="statusRX"></span> </td> </tr>
 						<tr> <td>TX:</td> <td><span id="statusTX"></span> </td> </tr>
 						<tr> <td>TX Buffer Count:</td> <td><span id="statusTxBufferCount"></span> </td> </tr>
@@ -117,6 +119,7 @@
 		<script>
 			var websocket;
 			var timeout = 0;
+            var messages = [];
 
 			document.addEventListener('DOMContentLoaded', function() {
 				//Verbinden
@@ -222,25 +225,7 @@
 				document.getElementById("settingsSSID").value = document.getElementById("settingsSSIDList").value;
 			});
 			
-			function showMessage(m) {
-                if ((m.messageType == 0) || (m.messageType == 1)) { //nur TEXT & TRACE Nachrichten
-                    var msg = "<span ";
-                    if (m.tx == true) {
-                        msg += "style='color: darkred;'> ";
-                    } else {
-                        msg += "> ";
-                    }
-                    const date = new Date(m.timestamp * 1000);
-                    msg += date.toLocaleString("de-DE", {day: "2-digit",  month: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }).replace(",", "") + " ";		
-                    msg += m.srcCall;
-                    if (m.dstCall)  {msg += " " + m.dstCall; }
-                    if (m.messageType == 1) {msg += " [TRACE] ";}
-                    msg += ": <b>" + m.text + "</b>";
-                    document.getElementById("messages").innerHTML = document.getElementById("messages").innerHTML + "</span><br>" + msg;                     
-                    document.getElementById('messages').scrollTop = document.getElementById("messages").scrollHeight;			
-                }
-            };
-			
+		
 
 			function onMessage(event) {
 				var d = JSON.parse(event.data);
@@ -303,7 +288,8 @@
 
                 //Message empfangen
                 if (d.message) {
-					showMessage(d.message);
+                    messages.push(d.message);
+					showMessages(d.message);
                 }
 
 				//Peers
@@ -423,17 +409,17 @@
 
 				//messages.json laden und parsen
                 document.getElementById("messages").innerHTML = document.getElementById("messages").innerHTML = "";
-                fetch(baseURL + "messages.json")
+                fetch(baseURL + "messages.json", )
                     .then(response => response.text())
                     .then(text => {
                         const lines = text.split(/\r?\n/);
                         lines.forEach(line => {
                             if (line.trim().length === 0) return;
                             const m = JSON.parse(line);
-                            showMessage(m.message);
+                            messages.push(m.message);
+                            
                     });
-                    document.getElementById("messages").innerHTML = document.getElementById("messages").innerHTML + "<hr>";                     
-                    document.getElementById('messages').scrollTop = document.getElementById("messages").scrollHeight;	
+                    showMessages();
                 });				
 			
 				websocket = new WebSocket(gateway);
@@ -441,6 +427,57 @@
 				websocket.onclose = onClose;
 				websocket.onmessage = onMessage;
 			}
+
+            function showMessages() {
+                var msg = "";
+                messages.forEach(function(m) {
+
+                    if ((m.messageType == 0) || (m.messageType == 1)) { //nur TEXT & TRACE Nachrichten
+                        if (m.dstCall.length == 0) {m.dstCall = "all";}
+
+                        // //MSG in Filter eintragen
+                        // var select = document.getElementById("messageFilter");
+                        // var options = select.options;
+                        // var exists = false;
+
+                        // // Prüfen, ob der Wert schon existiert
+                        // for (var i = 0; i < options.length; i++) {
+                        //     if (options[i].value === m.dstCall) {
+                        //         exists = true;
+                        //         break;
+                        //     }
+                        // }
+
+                        // // Nur hinzufügen, wenn er nicht gefunden wurde
+                        // if (!exists && m.dstCall.trim() !== "") {
+                        //     var opt = document.createElement("option");
+                        //     opt.value = m.dstCall;
+                        //     opt.innerHTML = m.dstCall;
+                        //     select.appendChild(opt);
+                        // }                        
+
+                        msg += "<span ";
+                        if (m.tx == true) {
+                            msg += "style='color: darkred;'> ";
+                        } else {
+                            msg += "> ";
+                        }
+                        const date = new Date(m.timestamp * 1000);
+                        msg += date.toLocaleString("de-DE", {day: "2-digit",  month: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }).replace(",", "") + " ";		
+                        msg += m.srcCall;
+                        if (m.dstCall)  {msg += " " + m.dstCall; }
+                        if (m.messageType == 1) {msg += " [TRACE] ";}
+                        msg += ": <b>" + m.text + "</b>";
+                        msg += "</span><br>"
+                    }
+
+                    document.getElementById("messages").innerHTML = msg;                     
+                    document.getElementById('messages').scrollTop = document.getElementById("messages").scrollHeight;			
+
+                });
+            }
+
+
 
 			function onOpen(event) {
 				//sendWS(JSON.stringify({scanWifi: true }));
