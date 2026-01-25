@@ -1,0 +1,295 @@
+
+@font-face {
+  font-family: 'FixedsysExcelsior';
+  /* Stelle sicher, dass die Datei im selben Ordner wie die CSS-Datei liegt */
+  src: url('Fixedsys_Excelsior.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+html {
+    /* Verhindert Glättung von Bildern/Icons beim Skalieren */
+    image-rendering: pixelated;
+    image-rendering: crisp-edges; /* Für Firefox */
+
+    /* Verhindert Schriftglättung (Antialiasing) */
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    font-smooth: never;
+}
+
+body, button {
+    font-family: 'FixedsysExcelsior', 'Courier New', monospace;
+    font-size: 18px;
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Obere Navigationsleiste */
+        .top {
+            position: fixed;
+            top: 0px;
+            width: 100%;
+            height: 25%;
+            display: flex;
+            background: #ff5e00;
+            color: #FFFFFF;
+        }
+
+        .left {
+            flex-grow: 1;  
+            display: flex;     
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .text-input {
+            background: #5555ff;
+            border: none;
+            outline: none;
+            padding: 0;
+            margin: 0;
+            resize: none; 
+            overflow: hidden;             
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            font-weight: inherit;
+            width: 100%;
+            height: calc(100% - 55px);
+        }
+
+        .channel-switch {
+            background: #aa1f1f;
+            width: 100%;
+            height: 35px;
+            display: flex;       /* Aktiviert Flexbox für die Button-Reihe */
+            width: 100%;         /* Nutzt die volle Breite von .links */
+            gap: 0px;
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+        }
+
+        .status-box {
+            background: #aa00aa;
+            width: 100%;
+            height: 30px;
+            display: flex;       /* Aktiviert Flexbox für die Button-Reihe */
+            width: 100%;         /* Nutzt die volle Breite von .links */
+            gap: 0px;
+        }        
+
+        .status {
+            height: 22px;
+            width: 100%;         /* Nutzt die volle Breite von .links */
+            border: 1px solid #ffffff;
+            padding: 3px;
+            text-align: left;
+            align-items: center;
+            display: flex;
+            justify-content: flex-start;  
+        }        
+
+        .right {
+            width: 150px;        /* Fixe Breite */
+            flex-shrink: 0;      /* Verhindert, dass das Div bei wenig Platz schrumpft */
+            text-align: center;   /* Text innerhalb ist rechtsbündig */
+            background: #00aa00;
+            border: 1px solid #ffffff;
+        }
+
+        .clock {
+            width: 100%;
+            height: calc(100% - 52px);
+            aspect-ratio: 1 / 1;
+        }
+
+        .grey-text-box {
+            background: #555555;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+            height: 18px;
+            border: 1px solid #ffffff;
+        }
+
+        .top-button {
+            position: fixed;
+            top: 110%;
+            height: 40px;
+            width: 100%;
+            background: #ff42428f;
+        }        
+
+        .middle {
+            position: fixed;
+            top: 25%;
+            width: 100%;
+            height: 50%;
+            background: #555555;
+            color: #FFFFFF;
+            z-index: 0;          
+        }
+
+        .monitor-small {
+            position: fixed;
+            top: 75%;
+            width: 100%;
+            height: 50%;
+            background: #0000aa;
+            color: #aaaaaa;
+            border-top: 4px solid #aaaaaa;
+      
+        }        
+
+        .monitor-big {
+            position: fixed;
+            top: 25%;
+            width: 100%;
+            height: 75%;
+            background: #0000aa;
+            color: #aaaaaa;
+        }        
+
+        .peer {
+            position: fixed;
+            top: 25%;
+            width: 100%;
+            height: 75%;
+            background: #808080;
+            color: #000000;
+        }        
+
+        .routing {
+            position: fixed;
+            top: 25%;
+            width: 100%;
+            height: 75%;
+            background: #808080;
+            color: #000000;
+        }        
+
+        .setup {
+            position: fixed;
+            top: 25%;
+            width: 100%;
+            height: 75%;
+            background: #808080;
+            color: #000000;
+        }        
+
+        .network {
+            position: fixed;
+            top: 25%;
+            width: 100%;
+            height: 75%;
+            background: #808080;
+            color: #000000;
+        }        
+
+        .bottom {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 10%;
+            display: flex;
+            background: #aa1f1f;
+            border: 1px solid #ffffff;
+            gap: 0px;
+        }
+
+
+.channel-button {
+    flex-grow: 1;        /* Das ist der Zaubertrick: Jeder Button dehnt sich maximal aus */
+    flex-basis: 0;
+  background-color: #555555;
+  color: #aaaaaa;
+  margin: 2px; 
+  
+  /* Sehr feiner Rahmen statt dicker Kante */
+  border: 1px solid #222;
+  border-radius: 0px;
+  cursor: pointer;
+            font-family: inherit;
+            font-size: inherit;  
+            text-shadow: 1px 1px 0px #000000;
+  /* Minimaler Schatten für Tiefe */
+  box-shadow: 
+    inset 1px 1px 1px rgba(255, 255, 255, 0.1), /* Ganz feine Lichtkante oben */
+    0px 2px 4px rgba(0, 0, 0, 0.4);            /* Weicher Schatten nach unten */
+    
+  outline: none;
+}
+
+/* Der dezente Drück-Effekt */
+.channel-button.selected, .channel-button:active {
+  /* Schatten verschwindet fast ganz */
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5); 
+    
+  /* Nur 1 Pixel Bewegung nach unten */
+  transform: translateY(1px);
+  
+  /* Hintergrund wird minimal dunkler */
+  background-color: #812222;
+
+}
+
+
+.main-button {
+    flex-grow: 1;
+    flex-basis: 0;
+    background-color: #00aaaa;
+    color: #000000;
+    margin: 2px;
+    height: calc(100% - 4px);
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Schiebt den Text nach unten */
+    padding: 4px;
+    
+    border: 1px solid #222;
+    border-radius: 0px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    
+    /* WICHTIG: Erlaubt absoluten Kindern, sich an diesem Button auszurichten */
+    position: relative; 
+    overflow: hidden; /* Verhindert, dass das Bild über den Button-Rand ragt */
+
+    box-shadow: 
+        inset 1px 1px 1px rgba(255, 255, 255, 0.1),
+        0px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Das Bild oben links */
+.button-icon {
+    image-rendering: pixelated;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0px; 
+    height: 90%; 
+    width: auto;
+    z-index: 0;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* Der Text unten rechts */
+.button-text {
+    align-self: flex-end;   /* Explizit rechts */
+    line-height: 1;
+    z-index: 50;         /* Hinter dem Text */
+}
+
+/* Drück-Effekt */
+.main-button:active, .main-button.selected {
+    box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.5);
+    transform: translateY(1px);
+    /* background-color: #812222; */
+}
