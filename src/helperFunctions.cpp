@@ -31,11 +31,11 @@ void sendFrame(Frame &f) {
     f.timestamp = time(NULL);
     f.tx = true;
 
+    bool first = true;
+    if (txBuffer.size() > 0) {first = false;}
     for (int port = 0; port <= 1; port++) {
         uint8_t availableNodeCount = 0;
         //An alle Peers senden
-        bool first = true;
-        if (txBuffer.size() > 0) {first = false;}
         for (int i = 0; i < peerList.size(); i++) {
             if ((peerList[i].available) && (peerList[i].port == port)) {
                 availableNodeCount ++;
@@ -43,7 +43,7 @@ void sendFrame(Frame &f) {
                 f.retry = TX_RETRY;
                 f.initRetry = TX_RETRY;
                 f.syncFlag = first;
-                f.port = peerList[i].port;
+                f.port = port;
                 txBuffer.push_back(f);
                 first = false;
             }
