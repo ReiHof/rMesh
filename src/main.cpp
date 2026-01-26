@@ -334,7 +334,7 @@ void loop() {
         if (sendNewSyncFrame == true) {
             for (int port = 0; port <= 1; port++) {
                 for (int i = 0; i < txBuffer.size(); i++) {
-                    if ((txBuffer[i].retry > 1) && (txBuffer[i].port = port)) {
+                    if ((txBuffer[i].retry > 1) && (txBuffer[i].port == port)) {
                         txBuffer[i].syncFlag = true; 
                         switch (txBuffer[i].port){
                             case 0: txBuffer[i].transmitMillis = millis() + TX_RETRY_TIME + getTOA(30); break;  //Time On Air für Antwort
