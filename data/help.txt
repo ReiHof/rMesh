@@ -10,7 +10,7 @@ DNs <ip-adresse> ........ WiFi DNS
 Gateway <ip-adresse> .... WiFi Gateway
 NEtmask <ip-maske> ...... WiFi NETmask
 Ap <1/0> ................ AP-Mode ein/aus
-Dhcp <1/0> .............. DHCP-Client aktiv
-Beboot .................. Neustart
-Vsersion ................ Version
+DHcp <1/0> .............. DHCP-Client aktiv
+Reboot .................. Neustart
+Version ................ Version
 DEfaults ................ Standardeinstellungen laden
