@@ -133,17 +133,6 @@ void loadSettings() {
     prefs.getBytes("config", &settings, sizeof(settings));
     size_t storedLen = prefs.getBytesLength("config");
 
-
-    //Prüfen, ob Einstellungen plausiebel
-    Serial.println(F("\n--- Aktuelle Einstellungen ---"));
-    Serial.print(F("WiFi SSID:     ")); Serial.println(settings.wifiSSID);
-    Serial.print(F("WiFi Password: ")); Serial.println(settings.wifiPassword); // PW aus Sicherheitsgründen maskiert
-    Serial.print(F("Callsign:      ")); Serial.println(settings.mycall);
-    Serial.print(F("NTP Server:    ")); Serial.println(settings.ntpServer);
-    Serial.print(F("Betriebsmodus: ")); 
-    Serial.println(settings.apMode ? F("Access Point (AP)") : F("Station (STA)"));
-
-
     //IP-Adressen fixen 
     settings.wifiIP       = IPAddress(settings.wifiIP[0], settings.wifiIP[1], settings.wifiIP[2], settings.wifiIP[3]);
     settings.wifiNetMask  = IPAddress(settings.wifiNetMask[0], settings.wifiNetMask[1], settings.wifiNetMask[2], settings.wifiNetMask[3]);
@@ -153,7 +142,7 @@ void loadSettings() {
 
     if (storedLen != sizeof(settings)) {
         //Defaults laden
-        Serial.println("Lade Default-Settings");
+        Serial.println("Lade Default-Settings !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         strcpy(settings.wifiSSID, "");
         strcpy(settings.wifiPassword, "");
         strcpy(settings.ntpServer, "de.pool.ntp.org");
@@ -173,6 +162,7 @@ void loadSettings() {
         settings.loraSpreadingFactor = 11;
         settings.loraPreambleLength = 10;
         settings.loraRepeat = true;
+        prefs.putBytes("config", &settings, sizeof(settings));
     }
 
     //MAX Nachrichtenlänge berechnen
@@ -186,7 +176,6 @@ void saveSettings() {
     //Einstellungen im EEPROM speichern
     Serial.println("Speichere Einstellungen...");
     prefs.putBytes("config", &settings, sizeof(settings));
-    loadSettings();
     sendSettings();
 }
 

@@ -2,6 +2,7 @@
 #include <LittleFS.h>
 #include <WiFi.h>
 #include <cstring>
+#include <nvs_flash.h>
 
 #include "frame.h"
 #include "serial.h"
@@ -206,7 +207,9 @@ void checkSerialRX() {
                 //Defaults
                 if (strncmp(serialRxBuffer, "de", 2) == 0) {
                     std::memset(settings.mycall, 0xff, sizeof(settings.mycall));
-                    loadSettings();
+                    nvs_flash_erase(); // Löscht die gesamte NVS-Partition
+                    nvs_flash_init();  // Initialisiert sie neu 
+                    rebootTimer = 0;
                 } 
 
                 

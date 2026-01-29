@@ -2,6 +2,7 @@
 #include <LittleFS.h>
 #include <esp_task_wdt.h>
 #include <vector>
+#include <nvs_flash.h>
 
 #include "config.h"
 #include "Hal.h"
@@ -275,14 +276,9 @@ void setup() {
     loadSettings();
 
     //Initialize LittleFS
-    if (!LittleFS.begin(true, "/littlefs", 20, "storage")) {
-        Serial.println("Fehler: Partition 'storage' nicht gefunden!");
-        // Falls es beim ersten Mal scheitert, mit formatOnFail probieren:
-        // LittleFS.begin(true, "/littlefs", 10, "storage");
-    }    
-    // if (!LittleFS.begin(true)) {
-    //     Serial.println("An error has occurred while mounting LittleFS");
-    // } 
+    if (!LittleFS.begin(true)) {
+        Serial.println("An error has occurred while mounting LittleFS");
+    } 
 
     //Init Hardware
     initHal();

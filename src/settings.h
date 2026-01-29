@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <Preferences.h>
 
 
 //Konfiguration
@@ -33,4 +34,5 @@ void showSettings();
 void sendSettings();
 
 extern Settings settings;
+extern Preferences prefs;
 
