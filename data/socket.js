@@ -150,7 +150,7 @@ async function sendMessage(text, channel) {
     var dstCall = document.getElementById('dstCall').innerHTML;
     if (dstCall == "..........") return;
     if (dstCall == "") {
-        dstCall = await inputBox("Destination Call?");
+        dstCall = (await inputBox("Destination Call?")).toUpperCase();
     }
     if (dstCall == "all") dstCall = "";
     var sendMessage = {};
