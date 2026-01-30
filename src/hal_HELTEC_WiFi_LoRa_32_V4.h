@@ -17,6 +17,16 @@
 #define PIN_AP_MODE_SWITCH 0     //Taster Umschaltung WiFi CLient/AP
 #define PIN_WIFI_LED 35      //LED WiFi-Status (ein = AP-Mode, blinken = Client-Mode, aus = nicht verbunden)
 
+#define PIN_VEXT_CTRL 36 
+#define PIN_VGNSS_CTRL 34 
+#define PIN_ADC_CTRL 37 
+
+
+#define PIN_PA_CPS 46   //PA
+#define PIN_PA_CSD 2    //PA
+#define PIN_VFEM 7      //PA
+
+
 
 void setWiFiLED(bool value);
 void initHal();
